@@ -2,6 +2,10 @@ from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
 import sqlite3
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, "images")
 
 class categoryClass:
     def __init__(self,root):
@@ -46,13 +50,13 @@ class categoryClass:
         self.show()
 
         #----------------- images ---------------------
-        self.im1=Image.open("Inventory-Management-System/images/cat.jpg")
+        self.im1=Image.open(os.path.join(IMAGE_DIR, "cat.jpg"))
         self.im1=self.im1.resize((500,250))
         self.im1=ImageTk.PhotoImage(self.im1)
         self.lbl_im1=Label(self.root,image=self.im1,bd=2,relief=RAISED)
         self.lbl_im1.place(x=50,y=220)
 
-        self.im2=Image.open("Inventory-Management-System/images/category.jpg")
+        self.im2=Image.open(os.path.join(IMAGE_DIR, "category.jpg"))
         self.im2=self.im2.resize((500,250))
         self.im2=ImageTk.PhotoImage(self.im2)
         self.lbl_im2=Label(self.root,image=self.im2,bd=2,relief=RAISED)

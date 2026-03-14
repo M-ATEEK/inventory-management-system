@@ -1,7 +1,11 @@
 import sqlite3
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'ims.db')
 
 def create_db():
-    con=sqlite3.connect(database=r'ims.db')
+    con = sqlite3.connect(database=DB_PATH)
     cur=con.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS employee(eid INTEGER PRIMARY KEY AUTOINCREMENT,name text,email text,gender text,contact text,dob text,doj text,pass text,utype text,address text,salary text)")
     con.commit()
