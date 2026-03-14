@@ -6,9 +6,13 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "ims.db")
 
 
+def _get_db_path():
+    return os.environ.get("IMS_DB_PATH", DB_PATH)
+
+
 @contextmanager
 def get_connection():
-    conn = sqlite3.connect(database=DB_PATH)
+    conn = sqlite3.connect(database=_get_db_path())
     try:
         yield conn
         conn.commit()
