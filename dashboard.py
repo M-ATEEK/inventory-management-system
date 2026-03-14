@@ -10,6 +10,8 @@ from supplier import supplierClass
 from category import categoryClass
 from product import productClass
 from sales import salesClass
+from billing import billClass
+from login import run_login
 
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 BILL_DIR = os.path.join(BASE_DIR, "bill")
@@ -42,7 +44,8 @@ class IMS:
         btn_logout = Button(
             self.root, text="Logout",
             font=("times new roman", 15, "bold"),
-            bg="yellow", cursor="hand2"
+            bg="yellow", cursor="hand2",
+            command=self.logout
         ).place(x=1150, y=10, height=50, width=150)
 
         # ------------ clock -----------------
@@ -107,6 +110,14 @@ class IMS:
 
         btn_sales = Button(
             LeftMenu, text="Sales", command=self.sales,
+            image=self.icon_side, compound=LEFT,
+            padx=5, anchor="w",
+            font=("times new roman", 20, "bold"),
+            bg="white", bd=3, cursor="hand2"
+        ).pack(side=TOP, fill=X)
+
+        btn_billing = Button(
+            LeftMenu, text="Billing", command=self.billing,
             image=self.icon_side, compound=LEFT,
             padx=5, anchor="w",
             font=("times new roman", 20, "bold"),
@@ -188,6 +199,14 @@ class IMS:
     def sales(self):
         self.new_win = Toplevel(self.root)
         self.new_obj = salesClass(self.new_win)
+
+    def billing(self):
+        self.new_win = Toplevel(self.root)
+        self.new_obj = billClass(self.new_win)
+
+    def logout(self):
+        self.root.destroy()
+        run_login()
 
     def update_content(self):
         try:
