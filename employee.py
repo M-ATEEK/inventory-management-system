@@ -4,7 +4,7 @@ from tkinter import ttk,messagebox
 
 from db_utils import execute_fetchall,execute_fetchone,execute_update,populate_treeview
 
-class employeeClass:
+class EmployeeClass:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1100x500+320+220")
@@ -256,7 +256,9 @@ class employeeClass:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 
+employeeClass=EmployeeClass
+
 if __name__=="__main__":
     root=Tk()
-    obj=employeeClass(root)
+    obj=EmployeeClass(root)
     root.mainloop()
