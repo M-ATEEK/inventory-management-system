@@ -25,7 +25,7 @@ class billClass:
         title=Label(self.root,text="Inventory Management System",image=self.icon_title,compound=LEFT,font=("times new roman",40,"bold"),bg="#010c48",fg="white",anchor="w",padx=20).place(x=0,y=0,relwidth=1,height=70)
 
         #------------ logout button -----------
-        btn_logout=Button(self.root,text="Logout",font=("times new roman",15,"bold"),bg="yellow",cursor="hand2").place(x=1150,y=10,height=50,width=150)
+        btn_logout=Button(self.root,text="Logout",font=("Helvetica",13,"bold"),bg="yellow",cursor="hand2",highlightthickness=0).place(x=1150,y=10,height=50,width=150)
 
         #------------ clock -----------------
         self.lbl_clock=Label(self.root,text="Welcome to Inventory Management System\t\t Date: DD:MM:YYYY\t\t Time: HH:MM:SS",font=("times new roman",15),bg="#4d636d",fg="white")
@@ -46,8 +46,8 @@ class billClass:
         
         lbl_search=Label(ProductFrame2,text="Product Name",font=("times new roman",15,"bold"),bg="white").place(x=2,y=45)
         txt_search=Entry(ProductFrame2,textvariable=self.var_search,font=("times new roman",15),bg="lightyellow").place(x=128,y=47,width=150,height=22)
-        btn_search=Button(ProductFrame2,text="Search",command=self.search,font=("goudy old style",15),bg="#2196f3",fg="white",cursor="hand2").place(x=285,y=45,width=100,height=25)
-        btn_show_all=Button(ProductFrame2,text="Show All",command=self.show,font=("goudy old style",15),bg="#083531",fg="white",cursor="hand2").place(x=285,y=10,width=100,height=25)
+        btn_search=Button(ProductFrame2,text="Search",command=self.search,font=("Helvetica",13,"bold"),bg="#2196f3",fg="white",cursor="hand2",highlightthickness=0).place(x=285,y=45,width=100,height=25)
+        btn_show_all=Button(ProductFrame2,text="Show All",command=self.show,font=("Helvetica",13,"bold"),bg="#083531",fg="white",cursor="hand2",highlightthickness=0).place(x=285,y=10,width=100,height=25)
 
         ProductFrame3=Frame(ProductFrame1,bd=3,relief=RIDGE)
         ProductFrame3.place(x=2,y=140,width=398,height=375)
@@ -172,8 +172,8 @@ class billClass:
         self.lbl_inStock=Label(Add_CartWidgets_Frame,text="In Stock",font=("times new roman",15),bg="white")
         self.lbl_inStock.place(x=5,y=70)
 
-        btn_clear_cart=Button(Add_CartWidgets_Frame,command=self.clear_cart,text="Clear",font=("times new roman",15,"bold"),bg="lightgray",cursor="hand2").place(x=180,y=70,width=150,height=30)
-        btn_add_cart=Button(Add_CartWidgets_Frame,command=self.add_update_cart,text="Add | Update",font=("times new roman",15,"bold"),bg="orange",cursor="hand2").place(x=340,y=70,width=180,height=30)
+        btn_clear_cart=Button(Add_CartWidgets_Frame,command=self.clear_cart,text="Clear",font=("Helvetica",13,"bold"),bg="lightgray",cursor="hand2",highlightthickness=0).place(x=180,y=70,width=150,height=30)
+        btn_add_cart=Button(Add_CartWidgets_Frame,command=self.add_update_cart,text="Add | Update",font=("Helvetica",13,"bold"),bg="orange",cursor="hand2",highlightthickness=0).place(x=340,y=70,width=180,height=30)
         
         #------------------- billing area -------------------
         billFrame=Frame(self.root,bd=2,relief=RIDGE,bg="white")
@@ -200,13 +200,13 @@ class billClass:
         self.lbl_net_pay=Label(billMenuFrame,text="Net Pay\n[0]",font=("goudy old style",15,"bold"),bg="#607d8b",fg="white")
         self.lbl_net_pay.place(x=246,y=5,width=160,height=70)
 
-        btn_print=Button(billMenuFrame,text="Print",command=self.print_bill,cursor="hand2",font=("goudy old style",15,"bold"),bg="lightgreen",fg="white")
+        btn_print=Button(billMenuFrame,text="Print",command=self.print_bill,cursor="hand2",font=("Helvetica",13,"bold"),bg="lightgreen",fg="white",highlightthickness=0)
         btn_print.place(x=2,y=80,width=120,height=50)
 
-        btn_clear_all=Button(billMenuFrame,text="Clear All",command=self.clear_all,cursor="hand2",font=("goudy old style",15,"bold"),bg="gray",fg="white")
+        btn_clear_all=Button(billMenuFrame,text="Clear All",command=self.clear_all,cursor="hand2",font=("Helvetica",13,"bold"),bg="gray",fg="white",highlightthickness=0)
         btn_clear_all.place(x=124,y=80,width=120,height=50)
 
-        btn_generate=Button(billMenuFrame,text="Generate Bill",command=self.generate_bill,cursor="hand2",font=("goudy old style",15,"bold"),bg="#009688",fg="white")
+        btn_generate=Button(billMenuFrame,text="Generate Bill",command=self.generate_bill,cursor="hand2",font=("Helvetica",13,"bold"),bg="#009688",fg="white",highlightthickness=0)
         btn_generate.place(x=246,y=80,width=160,height=50)
 
         self.show()

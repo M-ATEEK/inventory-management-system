@@ -42,8 +42,8 @@ class salesClass:
 
         btn_search = Button(
             self.root, text="Search", command=self.search,
-            font=("times new roman", 15, "bold"),
-            bg="#2196f3", fg="white", cursor="hand2"
+            font=("Helvetica", 13, "bold"),
+            bg="#2196f3", fg="white", cursor="hand2", highlightthickness=0
         ).place(x=360, y=100, width=120, height=28)
 
         btn_clear = Button(
