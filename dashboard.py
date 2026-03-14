@@ -2,17 +2,15 @@ from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import messagebox
 import time
-import sqlite3
 import os
 
+from db_utils import execute_fetchall,BASE_DIR
 from employee import employeeClass
 from supplier import supplierClass
 from category import categoryClass
 from product import productClass
 from sales import salesClass
 
-# ------------------ BASE PATH SETUP ------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 BILL_DIR = os.path.join(BASE_DIR, "bill")
 
@@ -192,39 +190,23 @@ class IMS:
         self.new_obj = salesClass(self.new_win)
 
     def update_content(self):
-        con = sqlite3.connect(database=os.path.join(BASE_DIR, 'ims.db'))
-        cur = con.cursor()
-
         try:
-            cur.execute("select * from product")
-            product = cur.fetchall()
+            product=execute_fetchall("select * from product")
             self.lbl_product.config(text=f"Total Product\n[ {len(product)} ]")
-
-            cur.execute("select * from category")
-            category = cur.fetchall()
+            category=execute_fetchall("select * from category")
             self.lbl_category.config(text=f"Total Category\n[ {len(category)} ]")
-
-            cur.execute("select * from employee")
-            employee = cur.fetchall()
+            employee=execute_fetchall("select * from employee")
             self.lbl_employee.config(text=f"Total Employee\n[ {len(employee)} ]")
-
-            cur.execute("select * from supplier")
-            supplier = cur.fetchall()
+            supplier=execute_fetchall("select * from supplier")
             self.lbl_supplier.config(text=f"Total Supplier\n[ {len(supplier)} ]")
-
-            bill = len(os.listdir(BILL_DIR))
+            bill=len(os.listdir(BILL_DIR))
             self.lbl_sales.config(text=f"Total Sales\n[ {bill} ]")
-
-            time_ = time.strftime("%I:%M:%S")
-            date_ = time.strftime("%d-%m-%Y")
-            self.lbl_clock.config(
-                text=f"Welcome to Inventory Management System\t\t Date: {date_}\t\t Time: {time_}"
-            )
-
-            self.lbl_clock.after(200, self.update_content)
-
+            time_=time.strftime("%I:%M:%S")
+            date_=time.strftime("%d-%m-%Y")
+            self.lbl_clock.config(text=f"Welcome to Inventory Management System\t\t Date: {date_}\t\t Time: {time_}")
+            self.lbl_clock.after(200,self.update_content)
         except Exception as ex:
-            messagebox.showerror("Error", f"Error due to : {str(ex)}", parent=self.root)
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 
 if __name__ == "__main__":

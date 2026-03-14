@@ -1,12 +1,12 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
-import sqlite3
 import time
 import os
 import tempfile
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+from db_utils import BASE_DIR,execute_fetchall,execute_update,populate_treeview
+
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 BILL_DIR = os.path.join(BASE_DIR, "bill")
 os.makedirs(BILL_DIR, exist_ok=True)
@@ -225,34 +225,24 @@ class billClass:
         self.var_cal_input.set(eval(result))
 
     def show(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
-            cur.execute("select pid,name,price,qty,status from product where status='Active'")
-            rows=cur.fetchall()
-            self.product_Table.delete(*self.product_Table.get_children())
-            for row in rows:
-                self.product_Table.insert('',END,values=row)
+            rows=execute_fetchall("select pid,name,price,qty,status from product where status='Active'")
+            populate_treeview(self.product_Table,rows)
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def search(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             if self.var_search.get()=="":
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
             else:
-                cur.execute("select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%'")
-                rows=cur.fetchall()
+                rows=execute_fetchall("select pid,name,price,qty,status from product where name LIKE '%"+self.var_search.get()+"%'")
                 if len(rows)!=0:
-                    self.product_Table.delete(*self.product_Table.get_children())
-                    for row in rows:
-                        self.product_Table.insert('',END,values=row)
+                    populate_treeview(self.product_Table,rows)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def get_data(self,ev):
         f=self.product_Table.focus()
@@ -375,28 +365,16 @@ class billClass:
         self.txt_bill_area.insert(END,bill_bottom_temp)
 
     def bill_middle(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             for row in self.cart_list:
                 pid=row[0]
                 name=row[1]
                 qty=int(row[4])-int(row[3])
-                if int(row[3])==int(row[4]):
-                    status="Inactive"
-                if int(row[3])!=int(row[4]):
-                    status="Active"
+                status="Inactive" if int(row[3])==int(row[4]) else "Active"
                 price=float(row[2])*int(row[3])
                 price=str(price)
                 self.txt_bill_area.insert(END,"\n "+name+"\t\t\t"+row[3]+"\tRs."+price)
-                #------------- update qty in product table --------------
-                cur.execute("update product set qty=?,status=? where pid=?",(
-                    qty,
-                    status,
-                    pid
-                ))
-                con.commit()
-            con.close()
+                execute_update("update product set qty=?,status=? where pid=?",(qty,status,pid))
             self.show()
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)

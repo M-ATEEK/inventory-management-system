@@ -1,7 +1,8 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
-import sqlite3
+
+from db_utils import execute_fetchall,execute_fetchone,execute_update,populate_treeview
 
 class productClass:
     def __init__(self,root):
@@ -106,43 +107,30 @@ class productClass:
         self.fetch_cat_sup()
 #-----------------------------------------------------------------------------------------------------
     def fetch_cat_sup(self):
-        self.cat_list.append("Empty")
-        self.sup_list.append("Empty")
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
+        self.cat_list=["Empty"]
+        self.sup_list=["Empty"]
         try:
-            cur.execute("select name from category")
-            cat=cur.fetchall()
+            cat=execute_fetchall("select name from category")
             if len(cat)>0:
-                del self.cat_list[:]
-                self.cat_list.append("Select")
-                for i in cat:
-                    self.cat_list.append(i[0])
-            cur.execute("select name from supplier")
-            sup=cur.fetchall()
+                self.cat_list=["Select"]+[i[0] for i in cat]
+            sup=execute_fetchall("select name from supplier")
             if len(sup)>0:
-                del self.sup_list[:]
-                self.sup_list.append("Select")
-                for i in sup:
-                    self.sup_list.append(i[0])
+                self.sup_list=["Select"]+[i[0] for i in sup]
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     
     
     def add(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
-            if self.var_cat.get()=="Select" or self.var_cat.get()=="Empty" or self.var_sup=="Select" or self.var_sup=="Empty":
+            if self.var_cat.get()=="Select" or self.var_cat.get()=="Empty" or self.var_sup.get()=="Select" or self.var_sup.get()=="Empty":
                 messagebox.showerror("Error","All fields are required",parent=self.root)
             else:
-                cur.execute("Select * from product where name=?",(self.var_name.get(),))
-                row=cur.fetchone()
+                row=execute_fetchone("Select * from product where name=?",(self.var_name.get(),))
                 if row!=None:
                     messagebox.showerror("Error","Product already present",parent=self.root)
                 else:
-                    cur.execute("insert into product(Category,Supplier,name,price,qty,status) values(?,?,?,?,?,?)",(
+                    execute_update("insert into product(Category,Supplier,name,price,qty,status) values(?,?,?,?,?,?)",(
                         self.var_cat.get(),
                         self.var_sup.get(),
                         self.var_name.get(),
@@ -150,24 +138,18 @@ class productClass:
                         self.var_qty.get(),
                         self.var_status.get(),
                     ))
-                    con.commit()
                     messagebox.showinfo("Success","Product Added Successfully",parent=self.root)
                     self.clear()
                     self.show()
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def show(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
-            cur.execute("select * from product")
-            rows=cur.fetchall()
-            self.ProductTable.delete(*self.ProductTable.get_children())
-            for row in rows:
-                self.ProductTable.insert('',END,values=row)
+            rows=execute_fetchall("select * from product")
+            populate_treeview(self.ProductTable,rows)
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def get_data(self,ev):
         f=self.ProductTable.focus()
@@ -182,18 +164,15 @@ class productClass:
         self.var_status.set(row[6])
 
     def update(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             if self.var_pid.get()=="":
                 messagebox.showerror("Error","Please select product from list",parent=self.root)
             else:
-                cur.execute("Select * from product where pid=?",(self.var_pid.get(),))
-                row=cur.fetchone()
+                row=execute_fetchone("Select * from product where pid=?",(self.var_pid.get(),))
                 if row==None:
                     messagebox.showerror("Error","Invalid Product",parent=self.root)
                 else:
-                    cur.execute("update product set Category=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
+                    execute_update("update product set Category=?,Supplier=?,name=?,price=?,qty=?,status=? where pid=?",(
                         self.var_cat.get(),
                         self.var_sup.get(),
                         self.var_name.get(),
@@ -202,32 +181,27 @@ class productClass:
                         self.var_status.get(),
                         self.var_pid.get(),
                     ))
-                    con.commit()
                     messagebox.showinfo("Success","Product Updated Successfully",parent=self.root)
                     self.show()
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def delete(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             if self.var_pid.get()=="":
                 messagebox.showerror("Error","Select Product from the list",parent=self.root)
             else:
-                cur.execute("Select * from product where pid=?",(self.var_pid.get(),))
-                row=cur.fetchone()
+                row=execute_fetchone("Select * from product where pid=?",(self.var_pid.get(),))
                 if row==None:
                     messagebox.showerror("Error","Invalid Product",parent=self.root)
                 else:
                     op=messagebox.askyesno("Confirm","Do you really want to delete?",parent=self.root)
                     if op==True:
-                        cur.execute("delete from product where pid=?",(self.var_pid.get(),))
-                        con.commit()
+                        execute_update("delete from product where pid=?",(self.var_pid.get(),))
                         messagebox.showinfo("Delete","Product Deleted Successfully",parent=self.root)
                         self.clear()
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def clear(self):
         self.var_cat.set("Select")
@@ -243,24 +217,19 @@ class productClass:
 
     
     def search(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             if self.var_searchby.get()=="Select":
                 messagebox.showerror("Error","Select Search By option",parent=self.root)
             elif self.var_searchtxt.get()=="":
                 messagebox.showerror("Error","Search input should be required",parent=self.root)
             else:
-                cur.execute("select * from product where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
-                rows=cur.fetchall()
+                rows=execute_fetchall("select * from product where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
                 if len(rows)!=0:
-                    self.ProductTable.delete(*self.ProductTable.get_children())
-                    for row in rows:
-                        self.ProductTable.insert('',END,values=row)
+                    populate_treeview(self.ProductTable,rows)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 if __name__=="__main__":
     root=Tk()

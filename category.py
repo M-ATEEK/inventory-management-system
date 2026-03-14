@@ -1,10 +1,10 @@
 from tkinter import*
 from PIL import Image,ImageTk
 from tkinter import ttk,messagebox
-import sqlite3
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+from db_utils import execute_fetchall,execute_fetchone,execute_update,populate_treeview,BASE_DIR
+
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 
 class categoryClass:
@@ -63,38 +63,27 @@ class categoryClass:
         self.lbl_im2.place(x=580,y=220)
 #----------------------------------------------------------------------------------
     def add(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             if self.var_name.get()=="":
                 messagebox.showerror("Error","Category Name must be required",parent=self.root)
             else:
-                cur.execute("Select * from category where name=?",(self.var_name.get(),))
-                row=cur.fetchone()
+                row=execute_fetchone("Select * from category where name=?",(self.var_name.get(),))
                 if row!=None:
                     messagebox.showerror("Error","Category already present",parent=self.root)
                 else:
-                    cur.execute("insert into category(name) values(?)",(
-                        self.var_name.get(),
-                    ))
-                    con.commit()
+                    execute_update("insert into category(name) values(?)",(self.var_name.get(),))
                     messagebox.showinfo("Success","Category Added Successfully",parent=self.root)
                     self.clear()
                     self.show()
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def show(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
-            cur.execute("select * from category")
-            rows=cur.fetchall()
-            self.CategoryTable.delete(*self.CategoryTable.get_children())
-            for row in rows:
-                self.CategoryTable.insert('',END,values=row)
+            rows=execute_fetchall("select * from category")
+            populate_treeview(self.CategoryTable,rows)
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     
     def clear(self):
@@ -109,27 +98,23 @@ class categoryClass:
         self.var_name.set(row[1])
     
     def delete(self):
-        con=sqlite3.connect(database=r'ims.db')
-        cur=con.cursor()
         try:
             if self.var_cat_id.get()=="":
                 messagebox.showerror("Error","Category name must be required",parent=self.root)
             else:
-                cur.execute("Select * from category where cid=?",(self.var_cat_id.get(),))
-                row=cur.fetchone()
+                row=execute_fetchone("Select * from category where cid=?",(self.var_cat_id.get(),))
                 if row==None:
                     messagebox.showerror("Error","Invalid Category Name",parent=self.root)
                 else:
                     op=messagebox.askyesno("Confirm","Do you really want to delete?",parent=self.root)
                     if op==True:
-                        cur.execute("delete from category where cid=?",(self.var_cat_id.get(),))
-                        con.commit()
+                        execute_update("delete from category where cid=?",(self.var_cat_id.get(),))
                         messagebox.showinfo("Delete","Category Deleted Successfully",parent=self.root)
                         self.clear()
                         self.var_cat_id.set("")
                         self.var_name.set("")
         except Exception as ex:
-            messagebox.showerror("Error",f"Error due to : {str(ex)}")
+            messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 
 
