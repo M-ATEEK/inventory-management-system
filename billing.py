@@ -302,7 +302,6 @@ class billClass:
     def bill_update(self):
         self.bill_amnt=0
         self.net_pay=0
-        self.siscount=0
         for row in self.cart_list:
             self.bill_amnt=self.bill_amnt+(float(row[2])*int(row[3]))
         self.discount=(self.bill_amnt*5)/100
