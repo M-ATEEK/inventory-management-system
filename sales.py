@@ -20,7 +20,7 @@ class salesClass:
         self.root.resizable(False, False)
         self.root.focus_force()
 
-        self.blll_list = []
+        self.bill_list = []
         self.var_invoice = StringVar()
 
         # --------------- title ---------------------
@@ -94,13 +94,13 @@ class salesClass:
 
     # -------------------------------------------------------
     def show(self):
-        del self.blll_list[:]
+        del self.bill_list[:]
         self.Sales_List.delete(0, END)
 
         for i in os.listdir(BILL_DIR):
             if i.split('.')[-1] == 'txt':
                 self.Sales_List.insert(END, i)
-                self.blll_list.append(i.split('.')[0])
+                self.bill_list.append(i.split('.')[0])
 
     def get_data(self, ev):
         index_ = self.Sales_List.curselection()
@@ -119,7 +119,7 @@ class salesClass:
         if self.var_invoice.get() == "":
             messagebox.showerror("Error", "Invoice no. should be required", parent=self.root)
         else:
-            if self.var_invoice.get() in self.blll_list:
+            if self.var_invoice.get() in self.bill_list:
                 file_path = os.path.join(BILL_DIR, f"{self.var_invoice.get()}.txt")
                 self.bill_area.delete('1.0', END)
 
