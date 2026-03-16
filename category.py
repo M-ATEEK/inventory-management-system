@@ -7,7 +7,7 @@ from db_utils import execute_fetchall,execute_fetchone,execute_update,populate_t
 
 IMAGE_DIR = os.path.join(BASE_DIR, "images")
 
-class categoryClass:
+class CategoryClass:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1100x500+320+220")
@@ -118,7 +118,9 @@ class categoryClass:
 
 
 
+categoryClass=CategoryClass
+
 if __name__=="__main__":
     root=Tk()
-    obj=categoryClass(root)
+    obj=CategoryClass(root)
     root.mainloop()

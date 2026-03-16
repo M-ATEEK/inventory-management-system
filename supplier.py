@@ -4,7 +4,7 @@ from tkinter import ttk,messagebox
 
 from db_utils import execute_fetchall,execute_fetchone,execute_update,populate_treeview
 
-class supplierClass:
+class SupplierClass:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1100x500+320+220")
@@ -61,23 +61,23 @@ class supplierClass:
         scrolly=Scrollbar(sup_frame,orient=VERTICAL)
         scrollx=Scrollbar(sup_frame,orient=HORIZONTAL)\
         
-        self.SupplierTable=ttk.Treeview(sup_frame,columns=("invoice","name","contact","desc"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
+        self.supplier_table=ttk.Treeview(sup_frame,columns=("invoice","name","contact","desc"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
         scrollx.pack(side=BOTTOM,fill=X)
         scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.SupplierTable.xview)
-        scrolly.config(command=self.SupplierTable.yview)
-        self.SupplierTable.heading("invoice",text="Invoice")
-        self.SupplierTable.heading("name",text="Name")
-        self.SupplierTable.heading("contact",text="Contact")
-        self.SupplierTable.heading("desc",text="Description")
-        self.SupplierTable["show"]="headings"
-        self.SupplierTable.column("invoice",width=90)
-        self.SupplierTable.column("name",width=100)
-        self.SupplierTable.column("contact",width=100)
-        self.SupplierTable.column("desc",width=100)
+        scrollx.config(command=self.supplier_table.xview)
+        scrolly.config(command=self.supplier_table.yview)
+        self.supplier_table.heading("invoice",text="Invoice")
+        self.supplier_table.heading("name",text="Name")
+        self.supplier_table.heading("contact",text="Contact")
+        self.supplier_table.heading("desc",text="Description")
+        self.supplier_table["show"]="headings"
+        self.supplier_table.column("invoice",width=90)
+        self.supplier_table.column("name",width=100)
+        self.supplier_table.column("contact",width=100)
+        self.supplier_table.column("desc",width=100)
         
-        self.SupplierTable.pack(fill=BOTH,expand=1)
-        self.SupplierTable.bind("<ButtonRelease-1>",self.get_data)
+        self.supplier_table.pack(fill=BOTH,expand=1)
+        self.supplier_table.bind("<ButtonRelease-1>",self.get_data)
         self.show()
 #-----------------------------------------------------------------------------------------------------
     def add(self):
@@ -104,13 +104,13 @@ class supplierClass:
     def show(self):
         try:
             rows=execute_fetchall("select * from supplier")
-            populate_treeview(self.SupplierTable,rows)
+            populate_treeview(self.supplier_table,rows)
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def get_data(self,ev):
-        f=self.SupplierTable.focus()
-        content=(self.SupplierTable.item(f))
+        f=self.supplier_table.focus()
+        content=(self.supplier_table.item(f))
         row=content['values']
         self.var_sup_invoice.set(row[0])
         self.var_name.set(row[1])
@@ -170,14 +170,16 @@ class supplierClass:
             else:
                 row=execute_fetchone("select * from supplier where invoice=?",(self.var_searchtxt.get(),))
                 if row!=None:
-                    populate_treeview(self.SupplierTable,[row])
+                    populate_treeview(self.supplier_table,[row])
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
 
+supplierClass=SupplierClass
+
 if __name__=="__main__":
     root=Tk()
-    obj=supplierClass(root)
+    obj=SupplierClass(root)
     root.mainloop()

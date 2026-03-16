@@ -4,7 +4,7 @@ from tkinter import ttk,messagebox
 
 from db_utils import execute_fetchall,execute_fetchone,execute_update,populate_treeview
 
-class productClass:
+class ProductClass:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1100x500+320+220")
@@ -80,29 +80,29 @@ class productClass:
         scrolly=Scrollbar(product_frame,orient=VERTICAL)
         scrollx=Scrollbar(product_frame,orient=HORIZONTAL)\
         
-        self.ProductTable=ttk.Treeview(product_frame,columns=("pid","Category","Supplier","name","price","qty","status"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
+        self.product_table=ttk.Treeview(product_frame,columns=("pid","Category","Supplier","name","price","qty","status"),yscrollcommand=scrolly.set,xscrollcommand=scrollx.set)
         scrollx.pack(side=BOTTOM,fill=X)
         scrolly.pack(side=RIGHT,fill=Y)
-        scrollx.config(command=self.ProductTable.xview)
-        scrolly.config(command=self.ProductTable.yview)
-        self.ProductTable.heading("pid",text="P ID")
-        self.ProductTable.heading("Category",text="Category")
-        self.ProductTable.heading("Supplier",text="Suppler")
-        self.ProductTable.heading("name",text="Name")
-        self.ProductTable.heading("price",text="Price")
-        self.ProductTable.heading("qty",text="Quantity")
-        self.ProductTable.heading("status",text="Status")
-        self.ProductTable["show"]="headings"
-        self.ProductTable.column("pid",width=90)
-        self.ProductTable.column("Category",width=100)
-        self.ProductTable.column("Supplier",width=100)
-        self.ProductTable.column("name",width=100)
-        self.ProductTable.column("price",width=100)
-        self.ProductTable.column("qty",width=100)
-        self.ProductTable.column("status",width=100)
+        scrollx.config(command=self.product_table.xview)
+        scrolly.config(command=self.product_table.yview)
+        self.product_table.heading("pid",text="P ID")
+        self.product_table.heading("Category",text="Category")
+        self.product_table.heading("Supplier",text="Suppler")
+        self.product_table.heading("name",text="Name")
+        self.product_table.heading("price",text="Price")
+        self.product_table.heading("qty",text="Quantity")
+        self.product_table.heading("status",text="Status")
+        self.product_table["show"]="headings"
+        self.product_table.column("pid",width=90)
+        self.product_table.column("Category",width=100)
+        self.product_table.column("Supplier",width=100)
+        self.product_table.column("name",width=100)
+        self.product_table.column("price",width=100)
+        self.product_table.column("qty",width=100)
+        self.product_table.column("status",width=100)
         
-        self.ProductTable.pack(fill=BOTH,expand=1)
-        self.ProductTable.bind("<ButtonRelease-1>",self.get_data)
+        self.product_table.pack(fill=BOTH,expand=1)
+        self.product_table.bind("<ButtonRelease-1>",self.get_data)
         self.show()
         self.fetch_cat_sup()
 #-----------------------------------------------------------------------------------------------------
@@ -147,13 +147,13 @@ class productClass:
     def show(self):
         try:
             rows=execute_fetchall("select * from product")
-            populate_treeview(self.ProductTable,rows)
+            populate_treeview(self.product_table,rows)
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
     def get_data(self,ev):
-        f=self.ProductTable.focus()
-        content=(self.ProductTable.item(f))
+        f=self.product_table.focus()
+        content=(self.product_table.item(f))
         row=content['values']
         self.var_pid.set(row[0])
         self.var_cat.set(row[1])
@@ -225,13 +225,15 @@ class productClass:
             else:
                 rows=execute_fetchall("select * from product where "+self.var_searchby.get()+" LIKE '%"+self.var_searchtxt.get()+"%'")
                 if len(rows)!=0:
-                    populate_treeview(self.ProductTable,rows)
+                    populate_treeview(self.product_table,rows)
                 else:
                     messagebox.showerror("Error","No record found!!!",parent=self.root)
         except Exception as ex:
             messagebox.showerror("Error",f"Error due to : {str(ex)}",parent=self.root)
 
+productClass=ProductClass
+
 if __name__=="__main__":
     root=Tk()
-    obj=productClass(root)
+    obj=ProductClass(root)
     root.mainloop()
